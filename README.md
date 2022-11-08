@@ -56,6 +56,6 @@ jobs:
             github_token: ${{ secrets.GITHUB_TOKEN }}
             pkgbuild_path: aur/PKGBUILD
             aur_submodule_path: aur/aur-package-name
-            git_username: AUR Release Action
+            git_username: Anas Elgarhy
             git_email: anas.elgarhy.dev@gmail.com
 ```
