@@ -19,7 +19,7 @@ inputs:
     required: true
   pkgbuild_path:
     description: 'The path to the PKGBUILD file'
-    default: './PKGBUILD'
+    default: 'PKGBUILD'
   aur_submodule_path:
     description: 'The path to the AUR submodule'
     default: ''
