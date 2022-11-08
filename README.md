@@ -51,11 +51,11 @@ jobs:
         - name: Publish AUR package
           uses: anas-elgarhy/aur-release-action@v1
           with:
-            package_name: aur-package-name
+            package_name: aur-package-name # Use this if the package name in AUR is different from the repository name
             ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
             github_token: ${{ secrets.GITHUB_TOKEN }}
-            pkgbuild_path: aur/PKGBUILD
+            pkgbuild_path: aur/PKGBUILD # Use this if the PKGBUILD file is not in the root directory
             aur_submodule_path: aur/aur-package-name
-            git_username: Anas Elgarhy
-            git_email: anas.elgarhy.dev@gmail.com
+            git_username: Anas Elgarhy # Use this if you want to change the git username
+            git_email: anas.elgarhy.dev@gmail.com # Use this if you want to change the git email
 ```
