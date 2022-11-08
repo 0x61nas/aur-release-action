@@ -11,3 +11,51 @@
 | `aur_submodule_path`         | The path to the AUR submodule, if empty the AUR submodule will not be updated   |                                                  |
 | `github_token` (Required)    | The GitHub token to use to update the PKGBUILD file and the AUR submodule       |                                                  |
 
+## Example usage
+```yaml
+name: aur-publish
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  aur-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Publish AUR package
+        uses: anas-elgarhy/aur-release-action@v1
+        with:
+          package_name: aur-package-name
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+```
+- And you can use tha all arguments in the action like this:
+```yaml
+name: aur-publish
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+    aur-publish:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v2
+    
+        - name: Publish AUR package
+          uses: anas-elgarhy/aur-release-action@v1
+          with:
+            package_name: aur-package-name
+            ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            pkgbuild_path: aur/PKGBUILD
+            aur_submodule_path: aur/aur-package-name
+            git_username: AUR Release Action
+            git_email: anas.elgarhy.dev@gmail.com
+```
