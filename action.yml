@@ -26,6 +26,9 @@ inputs:
   github_token:
     description: 'The GitHub token to use for the release'
     required: true
+  commit_message:
+    description: 'The commit message to use for the git commit'
+    default: 'Update %FILENAME% to %VERSION%'
 runs:
   using: 'docker'
   image: 'Dockerfile'
