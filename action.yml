@@ -1,12 +1,39 @@
-name: 'Container Action Template'
-description: 'Get started with Container actions'
-author: 'GitHub'
-inputs: 
-  myInput:
-    description: 'Input to use'
-    default: 'world'
+name: 'AUR Release'
+description: 'Release a new version of a package on the AUR and update the PKGBUILD file and the aur submodule'
+author: 'Anas Elgarhy <anas.elgarhy.dev@gmail.com>'
+branding:
+    icon: 'package'
+    color: 'blue'
+inputs:
+  package_name:
+    description: 'The name in AUR of the package to release if different from the repository name'
+    default: ${{ github.event.repository.name }}
+  git_username:
+    description: 'The username to use for the git commit'
+    default: 'AUR Release Action'
+  git_email:
+    description: 'The email to use for the git commit'
+    default: 'github-action-bot@no-reply.com'
+  ssh_private_key:
+    description: 'The private key to use for the git commit'
+    required: true
+  pkgbuild_path:
+    description: 'The path to the PKGBUILD file'
+    default: './PKGBUILD'
+  aur_submodule_path:
+    description: 'The path to the AUR submodule'
+    default: ''
+  github_token:
+    description: 'The GitHub token to use for the release'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - ${{ inputs.myInput }}
+    - ${{ inputs.package_name }}
+    - ${{ inputs.git_username }}
+    - ${{ inputs.git_email }}
+    - ${{ inputs.ssh_private_key }}
+    - ${{ inputs.pkgbuild_path }}
+    - ${{ inputs.aur_submodule_path }}
+    - ${{ inputs.github_token }}

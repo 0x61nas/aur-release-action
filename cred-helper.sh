@@ -1,0 +1,4 @@
+#!/bin/bash
+
+GIT_PASSWORD=${INPUT_GITHUB_TOKEN:-${GIT_PASSWORD}}
+exec echo "$GIT_PASSWORD"
