@@ -56,6 +56,6 @@ jobs:
             github_token: ${{ secrets.GITHUB_TOKEN }}
             pkgbuild_path: aur/PKGBUILD # Use this if the PKGBUILD file is not in the root directory
             aur_submodule_path: aur/aur-package-name
-            git_username: Anas Elgarhy # Use this if you want to change the git username
-            git_email: anas.elgarhy.dev@gmail.com # Use this if you want to change the git email
+            git_username: Anas Elgarhy # Use this if you want to change the git username (recommended)
+            git_email: anas.elgarhy.dev@gmail.com # Use this if you want to change the git email (recommended)
 ```
