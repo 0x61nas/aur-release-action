@@ -3,7 +3,7 @@ description: 'Release a new version of a package on the AUR and update the PKGBU
 author: 'Anas Elgarhy <anas.elgarhy.dev@gmail.com>'
 branding:
     icon: 'package'
-    color: 'blue'
+    color: 'orange'
 inputs:
   package_name:
     description: 'The name in AUR of the package to release if different from the repository name'
