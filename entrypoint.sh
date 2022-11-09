@@ -32,6 +32,9 @@ git config --global user.email "$INPUT_GIT_EMAIL"
 git config --global core.askPass /cred-helper.sh
 git config --global credential.helper cache
 
+# Add the working directory as a save directory
+git comfig --global --add save.directory "$GITHUB_WORKSPACE"
+
 REPO_URL="ssh://aur@aur.archlinux.org/${INPUT_PACKAGE_NAME}.git"
 
 # Make the working directory
