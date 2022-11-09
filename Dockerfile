@@ -27,7 +27,7 @@ COPY ssh_config /home/builder/.ssh/config
 RUN chown -R builder:builder /home/builder/.ssh && \
     chmod 600 /home/builder/.ssh/* -R
 
-COPY LICENSE README.md cred-helper.sh /
+COPY LICENSE README.md cred-helper.sh utils.sh /
 
 COPY entrypoint.sh /entrypoint.sh
 
