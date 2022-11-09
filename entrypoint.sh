@@ -39,8 +39,8 @@ echo "::endgroup::Setup"
 echo "::group::Build"
 
 echo "Update the PKGBUILD with the new version"
-sed -i "s/pkgver=.*/pkgver=$NEW_RELEASE/" PKGBUILD
-sed -i "s/pkgrel=.*/pkgrel=1/" PKGBUILD
+sed -i "s/pkgver=.*/pkgver=${NEW_RELEASE}/g" PKGBUILD
+sed -i "s/pkgrel=.*/pkgrel=1/g" PKGBUILD
 
 echo "Update the PKGBUILD with the new checksums"
 updpkgsums
@@ -97,13 +97,13 @@ function generate_commit_message {
 
   echo "${INPUT_COMMIT_MESSAGE}" > /tmp/commit_message
 
-  sed -i "s/%VERSION%/$new_version/g" /tmp/commit_message
+  sed -i "s/%VERSION%/${new_version}/g" /tmp/commit_message
 
   FILENAME_REGEX="%FILENAME%"
   if [[ -z "$file_name" ]]; then
     FILENAME_REGEX="%FILENAME% "
   fi
-  sed -i "s/$FILENAME_REGEX/$file_name/g" /tmp/commit_message
+  sed -i "s/${FILENAME_REGEX}/${file_name}/g" /tmp/commit_message
 
   # shellcheck disable=SC2005
   echo "$(cat /tmp/commit_message)"
