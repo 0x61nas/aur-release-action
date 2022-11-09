@@ -4,7 +4,7 @@ set -o errexit -o pipefail -o nounset
 
 NEW_RELEASE=${GITHUB_REF##*/v}
 
-echo "version=${NEW_RELEASE}" >> "$GITHUB_OUTPUT"
+sudo echo "version=${NEW_RELEASE}" >> "$GITHUB_OUTPUT"
 
 export HOME=/home/builder
 
@@ -42,7 +42,7 @@ echo "::endgroup::Setup"
 echo "::group::Build"
 
 echo "::group::Build::Prepare"
-echo "Current directory: $(pwd)"
+sudo echo "Current directory: $(pwd)"
 
 echo "Update the PKGBUILD with the new version [${NEW_RELEASE}]"
 sed -i "s/^pkgver.*/pkgver=${NEW_RELEASE}/g" PKGBUILD
@@ -50,11 +50,11 @@ sed -i "s/^pkgrel.*/pkgrel=1/g" PKGBUILD
 
 echo "Update the PKGBUILD with the new checksums"
 updpkgsums
-echo "new_sha256sums=$(grep sha256sums PKGBUILD)"
+sudo echo "new_sha256sums=$(grep sha256sums PKGBUILD)" >> "$GITHUB_OUTPUT"
 
 echo "The new PKGBUILD is:"
 cat PKGBUILD
-echo "new_pkgbuild=$(cat PKGBUILD)" >> "$GITHUB_OUTPUT"
+sudo echo "new_pkgbuild=$(cat PKGBUILD)" >> "$GITHUB_OUTPUT"
 
 echo "::endgroup::Build::Prepare"
 
@@ -68,7 +68,7 @@ echo "Make the .SRCINFO file"
 makepkg --printsrcinfo > .SRCINFO
 echo "The new .SRCINFO is:"
 cat .SRCINFO
-echo "new_srcinfo=$(cat .SRCINFO)" >> "$GITHUB_OUTPUT"
+sudo echo "new_srcinfo=$(cat .SRCINFO)" >> "$GITHUB_OUTPUT"
 
 echo "Copy the new PKGBUILD and .SRCINFO files into the AUR repo"
 cp PKGBUILD .SRCINFO "$INPUT_PACKAGE_NAME/"
