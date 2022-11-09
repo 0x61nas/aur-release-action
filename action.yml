@@ -29,6 +29,15 @@ inputs:
   commit_message:
     description: 'The commit message to use for the git commit'
     default: 'Update %FILENAME% to %VERSION%'
+outputs:
+    version:
+        description: 'The new version of the package'
+    pkgbuild:
+        description: 'The new PKGBUILD file'
+    sha256sums:
+        description: 'The new sha256sums'
+    srcinfo:
+        description: 'The new .SRCINFO file'
 runs:
   using: 'docker'
   image: 'Dockerfile'

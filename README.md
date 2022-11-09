@@ -12,6 +12,14 @@
 | `github_token` (Required)    | The GitHub token to use to update the PKGBUILD file and the AUR submodule                  |                                                  |
 | `commit_message`             | The commit message to use for the git commit, it accepts the REGEX (%FILENAME%, %VERSION%) | `Update %FILENAME% to %VERSION%`                 |
 
+## Outputs
+| Name          | Description                    |
+|---------------|--------------------------------|
+| `version`     | The new version of the package |
+| `pkgbuild`    | The new PKGBUILD file          |
+| `sha256sums`  | The new sha256sums             |
+| `srcinfo`     | The new .SRCINFO file          |
+
 ## Example usage
 ```yaml
 name: aur-publish
