@@ -42,10 +42,4 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - ${{ inputs.package_name }}
-    - ${{ inputs.git_username }}
-    - ${{ inputs.git_email }}
-    - ${{ inputs.ssh_private_key }}
-    - ${{ inputs.pkgbuild_path }}
-    - ${{ inputs.aur_submodule_path }}
-    - ${{ inputs.github_token }}
+    - ${{ inputs.package_name }} ${{ inputs.git_username }} ${{ inputs.git_email }} ${{ inputs.ssh_private_key }} ${{ inputs.pkgbuild_path }} ${{ inputs.aur_submodule_path }} ${{ inputs.github_token }}
