@@ -3,13 +3,13 @@
 set -o errexit -o pipefail -o nounset
 
 NEW_RELEASE=${GITHUB_REF##*/v}
+NEW_RELEASE=${NEW_RELEASE##*/}
 
 export HOME=/home/builder
 
 echo "::group::Setup"
 
 echo "Creating release $NEW_RELEASE"
-sudo echo "version=${NEW_RELEASE}" >> "$GITHUB_OUTPUT"
 
 echo "Getting AUR SSH Public keys"
 ssh-keyscan aur.archlinux.org >> $HOME/.ssh/known_hosts
@@ -43,7 +43,7 @@ echo "::endgroup::Setup"
 echo "::group::Build"
 
 echo "::group::Build::Prepare"
-sudo echo "Current directory: $(pwd)"
+echo "Current directory: $(pwd)"
 
 echo "Update the PKGBUILD with the new version [${NEW_RELEASE}]"
 sed -i "s/^pkgver.*/pkgver=${NEW_RELEASE}/g" PKGBUILD
@@ -51,11 +51,10 @@ sed -i "s/^pkgrel.*/pkgrel=1/g" PKGBUILD
 
 echo "Update the PKGBUILD with the new checksums"
 updpkgsums
-sudo echo "new_sha256sums=$(grep sha256sums PKGBUILD)" >> "$GITHUB_OUTPUT"
+echo "new_sha256sums=$(grep sha256sums PKGBUILD)"
 
 echo "The new PKGBUILD is:"
 cat PKGBUILD
-sudo echo "new_pkgbuild=$(cat PKGBUILD)" >> "$GITHUB_OUTPUT"
 
 echo "::endgroup::Build::Prepare"
 
@@ -69,7 +68,6 @@ echo "Make the .SRCINFO file"
 makepkg --printsrcinfo > .SRCINFO
 echo "The new .SRCINFO is:"
 cat .SRCINFO
-sudo echo "new_srcinfo=$(cat .SRCINFO)" >> "$GITHUB_OUTPUT"
 
 echo "Copy the new PKGBUILD and .SRCINFO files into the AUR repo"
 cp PKGBUILD .SRCINFO "$INPUT_PACKAGE_NAME/"
