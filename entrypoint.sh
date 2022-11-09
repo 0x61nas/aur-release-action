@@ -80,8 +80,7 @@ cd "$INPUT_PACKAGE_NAME"
 
 echo "Push the new PKGBUILD and .SRCINFO files to the AUR repo"
 git add PKGBUILD .SRCINFO
-COMMIT_MESSAGE=generate_commit_message "" "$NEW_RELEASE"
-git commit --allow-empty -m "$COMMIT_MESSAGE"
+git commit --allow-empty -m "$(generate_commit_message "" "$NEW_RELEASE")"
 git push
 
 if [[ -z "${INPUT_SUBMODULE_PATH}" ]]; then
@@ -91,8 +90,7 @@ else
   cd "$GITHUB_WORKSPACE"
   git submodule update --remote "$INPUT_SUBMODULE_PATH"
   git add "$INPUT_SUBMODULE_PATH"
-  COMMIT_MESSAGE=generate_commit_message "submodule" "$NEW_RELEASE"
-  git commit --allow-empty -m "$COMMIT_MESSAGE"
+  git commit --allow-empty -m "$(generate_commit_message "submodule" "$NEW_RELEASE")"
   git push
 fi
 
@@ -100,8 +98,7 @@ echo "Update the PKGBUILD file in the main repo"
 cd "$GITHUB_WORKSPACE"
 cp $HOME/package/PKGBUILD "$INPUT_PKGBUILD_PATH"
 git add "$INPUT_PKGBUILD_PATH"
-COMMIT_MESSAGE=generate_commit_message "PKGBUILD" "$NEW_RELEASE"
-git commit -m "$COMMIT_MESSAGE"
+git commit -m "$(generate_commit_message "PKGBUILD" "$NEW_RELEASE")"
 git push
 
 echo "::endgroup::Commit"
