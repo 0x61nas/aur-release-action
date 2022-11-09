@@ -96,7 +96,7 @@ if [[ -z "${INPUT_AUR_SUBMODULE_PATH}" ]]; then
 else
   echo "Updating submodule"
   cd "$GITHUB_WORKSPACE"
-  git submodule update --remote "$INPUT_AUR_SUBMODULE_PATH"
+  git submodule update --init "$INPUT_AUR_SUBMODULE_PATH"
   git add "$INPUT_AUR_SUBMODULE_PATH"
   git commit --allow-empty -m "$(generate_commit_message "submodule" "$NEW_RELEASE")"
   git push
