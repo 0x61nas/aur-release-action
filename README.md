@@ -28,7 +28,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Publish AUR package
-        uses: anas-elgarhy/aur-release-action@v3
+        uses: anas-elgarhy/aur-release-action@v3.1
         with:
           package_name: aur-package-name
           ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
@@ -50,7 +50,7 @@ jobs:
         - uses: actions/checkout@v2
     
         - name: Publish AUR package
-          uses: anas-elgarhy/aur-release-action@v3
+          uses: anas-elgarhy/aur-release-action@v3.1
           with:
             package_name: aur-package-name # Use this if the package name in AUR is different from the repository name
             ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
