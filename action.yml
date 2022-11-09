@@ -29,14 +29,17 @@ inputs:
   commit_message:
     description: 'The commit message to use for the git commit'
     default: 'Update %FILENAME% to %VERSION%'
+outputs:
+    version:
+        description: 'The new version of the package'
+    pkgbuild:
+        description: 'The new PKGBUILD file'
+    sha256sums:
+        description: 'The new sha256sums'
+    srcinfo:
+        description: 'The new .SRCINFO file'
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - ${{ inputs.package_name }}
-    - ${{ inputs.git_username }}
-    - ${{ inputs.git_email }}
-    - ${{ inputs.ssh_private_key }}
-    - ${{ inputs.pkgbuild_path }}
-    - ${{ inputs.aur_submodule_path }}
-    - ${{ inputs.github_token }}
+    - ${{ inputs.package_name }} ${{ inputs.git_username }} ${{ inputs.git_email }} ${{ inputs.ssh_private_key }} ${{ inputs.pkgbuild_path }} ${{ inputs.aur_submodule_path }} ${{ inputs.github_token }}

@@ -4,6 +4,8 @@ set -o errexit -o pipefail -o nounset
 
 NEW_RELEASE=${GITHUB_REF##*/v}
 
+echo "version=${NEW_RELEASE}" >> "$GITHUB_OUTPUT"
+
 export HOME=/home/builder
 
 echo "::group::Setup"
@@ -32,20 +34,31 @@ mkdir -p $HOME/package
 # Copy the PKGBUILD file into the working directory
 cp "$GITHUB_WORKSPACE/$INPUT_PKGBUILD_PATH" $HOME/package/PKGBUILD
 
+echo "Changing directory from $PWD to $HOME/package"
 cd $HOME/package
 
 echo "::endgroup::Setup"
 
 echo "::group::Build"
 
-echo "Update the PKGBUILD with the new version"
-sed -i "s/pkgver=.*/pkgver=${NEW_RELEASE}/g" PKGBUILD
-sed -i "s/pkgrel=.*/pkgrel=1/g" PKGBUILD
+echo "::group::Build::Prepare"
+echo "Current directory: $(pwd)"
+
+echo "Update the PKGBUILD with the new version [${NEW_RELEASE}]"
+sed -i "s/^pkgver.*/pkgver=${NEW_RELEASE}/g" PKGBUILD
+sed -i "s/^pkgrel.*/pkgrel=1/g" PKGBUILD
 
 echo "Update the PKGBUILD with the new checksums"
 updpkgsums
+echo "new_sha256sums=$(grep sha256sums PKGBUILD)"
 
-echo "Clone the AUR repo"
+echo "The new PKGBUILD is:"
+cat PKGBUILD
+echo "new_pkgbuild=$(cat PKGBUILD)" >> "$GITHUB_OUTPUT"
+
+echo "::endgroup::Build::Prepare"
+
+echo "Clone the AUR repo [${REPO_URL}]"
 git clone "$REPO_URL"
 
 echo "Building and installing dependencies"
@@ -53,6 +66,9 @@ makepkg --noconfirm -s -c
 
 echo "Make the .SRCINFO file"
 makepkg --printsrcinfo > .SRCINFO
+echo "The new .SRCINFO is:"
+cat .SRCINFO
+echo "new_srcinfo=$(cat .SRCINFO)" >> "$GITHUB_OUTPUT"
 
 echo "Copy the new PKGBUILD and .SRCINFO files into the AUR repo"
 cp PKGBUILD .SRCINFO "$INPUT_PACKAGE_NAME/"
