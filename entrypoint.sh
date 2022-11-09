@@ -4,11 +4,12 @@ set -o errexit -o pipefail -o nounset
 
 NEW_RELEASE=${GITHUB_REF##*/v}
 
-sudo echo "version=${NEW_RELEASE}" >> "$GITHUB_OUTPUT"
-
 export HOME=/home/builder
 
 echo "::group::Setup"
+
+echo "Creating release $NEW_RELEASE"
+sudo echo "version=${NEW_RELEASE}" >> "$GITHUB_OUTPUT"
 
 echo "Getting AUR SSH Public keys"
 ssh-keyscan aur.archlinux.org >> $HOME/.ssh/known_hosts

@@ -10,7 +10,11 @@ RUN pacman --needed --noconfirm -Syu \
 
 # Create non-root user
 RUN useradd -m builder && \
-    echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+    echo "builder ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers && \
+    echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers && \
+    usermod -a -G wheel builder
+
+
 
 # Make ssh directory for non-root user and add known_hosts
 RUN mkdir -p /home/builder/.ssh && \
