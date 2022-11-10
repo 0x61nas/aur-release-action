@@ -137,6 +137,7 @@ fi
 
 # Run post script
 if [[ -n "${INPUT_POSTSCRIPT}" ]]; then
+  cd "$GITHUB_WORKSPACE"
   echo "::group::Running post script"
   echo "Running post script"
   eval "${INPUT_POSTSCRIPT}"
