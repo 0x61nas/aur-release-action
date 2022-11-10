@@ -4,23 +4,28 @@ set -o errexit -o pipefail -o nounset
 
 source /utils.sh
 
-# shellcheck disable=SC2005
-echo "$(generate_commit_message "ttr" "1.0.0")"
-
 NEW_RELEASE=${GITHUB_REF##*/v}
 NEW_RELEASE=${NEW_RELEASE##*/}
 
 export HOME=/home/builder
+
+# Run pre script
+if [[ -n "${INPUT_PRESCRIPT}" ]]; then
+  echo "::group::Running pre script"
+  echo "Running pre script"
+  eval "${INPUT_PRESCRIPT}"
+  echo "::endgroup::Running pre script"
+fi
 
 echo "::group::Setup"
 
 echo "Creating release $NEW_RELEASE"
 
 echo "Getting AUR SSH Public keys"
-ssh-keyscan aur.archlinux.org >> $HOME/.ssh/known_hosts
+ssh-keyscan aur.archlinux.org >>$HOME/.ssh/known_hosts
 
 echo "Writing SSH Private keys to file"
-echo -e "${INPUT_SSH_PRIVATE_KEY//_/\\n}" > $HOME/.ssh/aur
+echo -e "${INPUT_SSH_PRIVATE_KEY//_/\\n}" >$HOME/.ssh/aur
 
 chmod 600 $HOME/.ssh/aur*
 
@@ -66,19 +71,23 @@ cat PKGBUILD
 
 echo "::endgroup::Build::Prepare"
 
-echo "Clone the AUR repo [${REPO_URL}]"
-git clone "$REPO_URL"
-
-echo "Building and installing dependencies"
-makepkg --noconfirm -s -c
-
 echo "Make the .SRCINFO file"
-makepkg --printsrcinfo > .SRCINFO
+makepkg --printsrcinfo >.SRCINFO
 echo "The new .SRCINFO is:"
 cat .SRCINFO
 
+if [[ "${INPUT_TRY_BUILD_AND_INSTALL}" == "true" ]]; then
+  echo "::group::Build::Install"
+  echo "Try building the package"
+  makepkg --syncdeps --noconfirm --cleanbuild --rmdeps --install
+  echo "::endgroup::Build::Install"
+fi
+
+echo "Clone the AUR repo [${REPO_URL}]"
+git clone "$REPO_URL"
+
 echo "Copy the new PKGBUILD and .SRCINFO files into the AUR repo"
-cp PKGBUILD .SRCINFO "$INPUT_PACKAGE_NAME/"
+cp -f PKGBUILD .SRCINFO "$INPUT_PACKAGE_NAME/"
 
 echo "::endgroup::Build"
 
@@ -88,25 +97,48 @@ cd "$INPUT_PACKAGE_NAME"
 
 echo "Push the new PKGBUILD and .SRCINFO files to the AUR repo"
 git add PKGBUILD .SRCINFO
-git commit --allow-empty -m "$(generate_commit_message "" "$NEW_RELEASE")"
+commit "$(generate_commit_message "" "$NEW_RELEASE")"
 git push
 
-if [[ -z "${INPUT_AUR_SUBMODULE_PATH}" ]]; then
-  echo "No submodule path provided, skipping submodule update"
-else
-  echo "Updating submodule"
-  cd "$GITHUB_WORKSPACE"
-  git submodule update --init "$INPUT_AUR_SUBMODULE_PATH"
-  git add "$INPUT_AUR_SUBMODULE_PATH"
-  git commit --allow-empty -m "$(generate_commit_message "submodule" "$NEW_RELEASE")"
+if [[ "$INPUT_UPDATE_PKGBUILD" == "true" || -n "$INPUT_AUR_SUBMODULE_PATH" ]]; then
+  echo "::group::Commit::Update main repo"
+  echo "Set the permissions on the .git directory"
+  chown -R builder:builder "$GITHUB_WORKSPACE/.git"
+
+  if [[ -z "${INPUT_AUR_SUBMODULE_PATH}" ]]; then
+    echo "No submodule path provided, skipping submodule update"
+  else
+    echo "Updating submodule"
+    cd "$GITHUB_WORKSPACE"
+    git submodule update --init "$INPUT_AUR_SUBMODULE_PATH"
+    git add "$INPUT_AUR_SUBMODULE_PATH"
+    commit "$(generate_commit_message "submodule" "$NEW_RELEASE")"
+  fi
+
+  if [[ "$INPUT_UPDATE_PKGBUILD" == "true" ]]; then
+    echo "Update the PKGBUILD file in the main repo"
+    cd "$GITHUB_WORKSPACE"
+    cp $HOME/package/PKGBUILD "$INPUT_PKGBUILD_PATH"
+    git add "$INPUT_PKGBUILD_PATH"
+    commit "$(generate_commit_message "PKGBUILD" "$NEW_RELEASE")"
+  fi
+
+  echo "::endgroup::Commit::Update main repo"
+
+  echo "::endgroup::Commit"
+
+  echo "::group::Push"
   git push
+  echo "::endgroup::Push"
+else
+  echo "Skipping submodule update and PKGBUILD update"
+  echo "::endgroup::Commit"
 fi
 
-echo "Update the PKGBUILD file in the main repo"
-cd "$GITHUB_WORKSPACE"
-cp $HOME/package/PKGBUILD "$INPUT_PKGBUILD_PATH"
-git add "$INPUT_PKGBUILD_PATH"
-git commit -m "$(generate_commit_message "PKGBUILD" "$NEW_RELEASE")"
-git push
-
-echo "::endgroup::Commit"
+# Run post script
+if [[ -n "${INPUT_POSTSCRIPT}" ]]; then
+  echo "::group::Running post script"
+  echo "Running post script"
+  eval "${INPUT_POSTSCRIPT}"
+  echo "::endgroup::Running post script"
+fi

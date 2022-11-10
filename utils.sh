@@ -15,3 +15,7 @@ function generate_commit_message {
   # shellcheck disable=SC2005
   echo "$(cat /tmp/commit_message)"
 }
+
+function commit {
+  git commit --allow-empty -m "$1"
+}
