@@ -2,8 +2,8 @@ name: 'AUR Release'
 description: 'Release a new version of a package on the AUR and update the PKGBUILD file and the aur submodule'
 author: 'Anas Elgarhy <anas.elgarhy.dev@gmail.com>'
 branding:
-    icon: 'package'
-    color: 'orange'
+  icon: 'package'
+  color: 'orange'
 inputs:
   package_name:
     description: 'The name in AUR of the package to release if different from the repository name'
@@ -20,6 +20,12 @@ inputs:
   pkgbuild_path:
     description: 'The path to the PKGBUILD file'
     default: 'PKGBUILD'
+  update_pkgbuild:
+    description: 'Whether to update the PKGBUILD file or not'
+    default: 'true'
+  try_build_and_install:
+    description: 'Whether to try building and installing the package or not'
+    default: 'true'
   aur_submodule_path:
     description: 'The path to the AUR submodule'
     default: ''
@@ -29,8 +35,25 @@ inputs:
   commit_message:
     description: 'The commit message to use for the git commit'
     default: 'Bump %FILENAME% to %VERSION%'
+  prescript:
+    description: 'The script to run before the action makes any changes'
+    default: ''
+  postscript:
+    description: 'The script to run after the action finishes making changes'
+    default: ''
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - ${{ inputs.package_name }} ${{ inputs.git_username }} ${{ inputs.git_email }} ${{ inputs.ssh_private_key }} ${{ inputs.pkgbuild_path }} ${{ inputs.aur_submodule_path }} ${{ inputs.github_token }}
+    - ${{ inputs.package_name }}
+    - ${{ inputs.git_username }}
+    - ${{ inputs.git_email }}
+    - ${{ inputs.ssh_private_key }}
+    - ${{ inputs.pkgbuild_path }}
+    - ${{ inputs.update_pkgbuild }}
+    - ${{ inputs.try_build_and_install }}
+    - ${{ inputs.aur_submodule_path }}
+    - ${{ inputs.github_token }}
+    - ${{ inputs.commit_message }}
+    - ${{ inputs.prescript }}
+    - ${{ inputs.postscript }}
