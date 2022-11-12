@@ -108,17 +108,17 @@ if [[ "$INPUT_UPDATE_PKGBUILD" == "true" || -n "$INPUT_AUR_SUBMODULE_PATH" ]]; t
   else
     echo "Updating submodule"
     cd "$GITHUB_WORKSPACE"
-    su -c "git submodule update --init $INPUT_AUR_SUBMODULE_PATH"
-    su -c "git add $INPUT_AUR_SUBMODULE_PATH"
-    su -c "commit $(generate_commit_message 'submodule' "$NEW_RELEASE")"
+    sudo git submodule update --init "$INPUT_AUR_SUBMODULE_PATH"
+    sudo git add "$INPUT_AUR_SUBMODULE_PATH"
+    sudo commit "$(generate_commit_message 'submodule' "$NEW_RELEASE")"
   fi
 
   if [[ "$INPUT_UPDATE_PKGBUILD" == "true" ]]; then
     echo "Update the PKGBUILD file in the main repo"
     cd "$GITHUB_WORKSPACE"
     cp $HOME/package/PKGBUILD "$INPUT_PKGBUILD_PATH"
-    su -c "git add $INPUT_PKGBUILD_PATH"
-    su -c "commit $(generate_commit_message 'PKGBUILD' "$NEW_RELEASE")"
+    sudo git add "$INPUT_PKGBUILD_PATH"
+    sudo commit "$(generate_commit_message 'PKGBUILD' "$NEW_RELEASE")"
   fi
 
   echo "::endgroup::Commit::Update main repo"
