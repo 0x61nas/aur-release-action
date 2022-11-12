@@ -102,25 +102,23 @@ git push
 
 if [[ "$INPUT_UPDATE_PKGBUILD" == "true" || -n "$INPUT_AUR_SUBMODULE_PATH" ]]; then
   echo "::group::Commit::Update main repo"
-  echo "Set the permissions on the .git directory"
-  chown -R builder:builder "$GITHUB_WORKSPACE/.git"
 
   if [[ -z "${INPUT_AUR_SUBMODULE_PATH}" ]]; then
     echo "No submodule path provided, skipping submodule update"
   else
     echo "Updating submodule"
     cd "$GITHUB_WORKSPACE"
-    git submodule update --init "$INPUT_AUR_SUBMODULE_PATH"
-    git add "$INPUT_AUR_SUBMODULE_PATH"
-    commit "$(generate_commit_message "submodule" "$NEW_RELEASE")"
+    su -c "git submodule update --init $INPUT_AUR_SUBMODULE_PATH"
+    su -c "git add $INPUT_AUR_SUBMODULE_PATH"
+    su -c "commit $(generate_commit_message 'submodule' "$NEW_RELEASE")"
   fi
 
   if [[ "$INPUT_UPDATE_PKGBUILD" == "true" ]]; then
     echo "Update the PKGBUILD file in the main repo"
     cd "$GITHUB_WORKSPACE"
     cp $HOME/package/PKGBUILD "$INPUT_PKGBUILD_PATH"
-    git add "$INPUT_PKGBUILD_PATH"
-    commit "$(generate_commit_message "PKGBUILD" "$NEW_RELEASE")"
+    su -c "git add $INPUT_PKGBUILD_PATH"
+    su -c "commit $(generate_commit_message 'PKGBUILD' "$NEW_RELEASE")"
   fi
 
   echo "::endgroup::Commit::Update main repo"
