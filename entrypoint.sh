@@ -34,11 +34,11 @@ git config --global user.name "$INPUT_GIT_USERNAME"
 git config --global user.email "$INPUT_GIT_EMAIL"
 
 # Add github token to the git credential helper
-git config --global core.askPass /cred-helper.sh
-git config --global credential.helper cache
+sudo git config --global core.askPass /cred-helper.sh
+sudo git config --global credential.helper cache
 
 # Add the working directory as a save directory
-git config --global --add safe.directory /github/workspace
+sudo git config --global --add safe.directory /github/workspace
 
 REPO_URL="ssh://aur@aur.archlinux.org/${INPUT_PACKAGE_NAME}.git"
 
