@@ -30,8 +30,8 @@ echo -e "${INPUT_SSH_PRIVATE_KEY//_/\\n}" >$HOME/.ssh/aur
 chmod 600 $HOME/.ssh/aur*
 
 echo "Setting up Git"
-git config --global user.name "$INPUT_GIT_USERNAME"
-git config --global user.email "$INPUT_GIT_EMAIL"
+sudo git config --global user.name "$INPUT_GIT_USERNAME"
+sudo git config --global user.email "$INPUT_GIT_EMAIL"
 
 # Add github token to the git credential helper
 sudo git config --global core.askPass /cred-helper.sh
