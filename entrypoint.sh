@@ -102,6 +102,8 @@ git push
 
 if [[ "$INPUT_UPDATE_PKGBUILD" == "true" || -n "$INPUT_AUR_SUBMODULE_PATH" ]]; then
   echo "::group::Commit::Main_repo"
+  echo "Checkout to the temporary branch"
+  sudo git checkout -b "update_${INPUT_PACKAGE_NAME}_to_${NEW_RELEASE}"
 
   if [[ "$INPUT_UPDATE_PKGBUILD" == "true" ]]; then
     echo "Update the PKGBUILD file in the main repo"
@@ -126,7 +128,9 @@ if [[ "$INPUT_UPDATE_PKGBUILD" == "true" || -n "$INPUT_AUR_SUBMODULE_PATH" ]]; t
   echo "::endgroup::Commit"
 
   echo "::group::Push"
-  sudo git push
+  sudo git checkout master
+  sudo git merge "update_${INPUT_PACKAGE_NAME}_to_${NEW_RELEASE}"
+  sudo git push origin master
   echo "::endgroup::Push"
 else
   echo "Skipping submodule update and PKGBUILD update"
