@@ -17,5 +17,5 @@ function generate_commit_message {
 }
 
 function commit {
-  git commit --allow-empty -m "$1"
+  sudo git commit --allow-empty -m "$1"
 }
