@@ -108,7 +108,7 @@ if [[ "$INPUT_UPDATE_PKGBUILD" == "true" || -n "$INPUT_AUR_SUBMODULE_PATH" ]]; t
     cd "$GITHUB_WORKSPACE"
     sudo cp /tmp/package/PKGBUILD "$INPUT_PKGBUILD_PATH"
     sudo git add "$INPUT_PKGBUILD_PATH"
-    sudo commit "$(generate_commit_message 'PKGBUILD' "$NEW_RELEASE")"
+    commit "$(generate_commit_message 'PKGBUILD' "$NEW_RELEASE")"
   fi
 
   if [[ -z "${INPUT_AUR_SUBMODULE_PATH}" ]]; then
@@ -118,7 +118,7 @@ if [[ "$INPUT_UPDATE_PKGBUILD" == "true" || -n "$INPUT_AUR_SUBMODULE_PATH" ]]; t
     cd "$GITHUB_WORKSPACE"
     sudo git submodule update --init "$INPUT_AUR_SUBMODULE_PATH"
     sudo git add "$INPUT_AUR_SUBMODULE_PATH"
-    sudo commit "$(generate_commit_message 'submodule' "$NEW_RELEASE")"
+    commit "$(generate_commit_message 'submodule' "$NEW_RELEASE")"
   fi
 
   echo "::endgroup::Commit::Main_repo"
