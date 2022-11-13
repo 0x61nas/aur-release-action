@@ -43,13 +43,13 @@ sudo git config --global --add safe.directory /github/workspace
 REPO_URL="ssh://aur@aur.archlinux.org/${INPUT_PACKAGE_NAME}.git"
 
 # Make the working directory
-mkdir -p $HOME/package
+mkdir -p /tmp/package
 
 # Copy the PKGBUILD file into the working directory
-cp "$GITHUB_WORKSPACE/$INPUT_PKGBUILD_PATH" $HOME/package/PKGBUILD
+cp "$GITHUB_WORKSPACE/$INPUT_PKGBUILD_PATH" /tmp/package/PKGBUILD
 
 echo "Changing directory from $PWD to $HOME/package"
-cd $HOME/package
+cd /tmp/package
 
 echo "::endgroup::Setup"
 
@@ -101,7 +101,15 @@ commit "$(generate_commit_message "" "$NEW_RELEASE")"
 git push
 
 if [[ "$INPUT_UPDATE_PKGBUILD" == "true" || -n "$INPUT_AUR_SUBMODULE_PATH" ]]; then
-  echo "::group::Commit::Update main repo"
+  echo "::group::Commit::Main_repo"
+
+  if [[ "$INPUT_UPDATE_PKGBUILD" == "true" ]]; then
+    echo "Update the PKGBUILD file in the main repo"
+    cd "$GITHUB_WORKSPACE"
+    sudo cp /tmp/package/PKGBUILD "$INPUT_PKGBUILD_PATH"
+    sudo git add "$INPUT_PKGBUILD_PATH"
+    sudo commit "$(generate_commit_message 'PKGBUILD' "$NEW_RELEASE")"
+  fi
 
   if [[ -z "${INPUT_AUR_SUBMODULE_PATH}" ]]; then
     echo "No submodule path provided, skipping submodule update"
@@ -113,15 +121,7 @@ if [[ "$INPUT_UPDATE_PKGBUILD" == "true" || -n "$INPUT_AUR_SUBMODULE_PATH" ]]; t
     sudo commit "$(generate_commit_message 'submodule' "$NEW_RELEASE")"
   fi
 
-  if [[ "$INPUT_UPDATE_PKGBUILD" == "true" ]]; then
-    echo "Update the PKGBUILD file in the main repo"
-    cd "$GITHUB_WORKSPACE"
-    cp $HOME/package/PKGBUILD "$INPUT_PKGBUILD_PATH"
-    sudo git add "$INPUT_PKGBUILD_PATH"
-    sudo commit "$(generate_commit_message 'PKGBUILD' "$NEW_RELEASE")"
-  fi
-
-  echo "::endgroup::Commit::Update main repo"
+  echo "::endgroup::Commit::Main_repo"
 
   echo "::endgroup::Commit"
 
