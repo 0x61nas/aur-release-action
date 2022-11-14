@@ -102,6 +102,9 @@ git push
 
 if [[ "$INPUT_UPDATE_PKGBUILD" == "true" || -n "$INPUT_AUR_SUBMODULE_PATH" ]]; then
   echo "::group::Commit::Main_repo"
+  echo "The available branches are:"
+  git branch -a
+  echo "The current branch is: $(git branch --show-current)"
   echo "Checkout to the temporary branch"
   sudo git checkout -b "update_${INPUT_PACKAGE_NAME}_to_${NEW_RELEASE}"
 
