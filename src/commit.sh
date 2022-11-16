@@ -9,10 +9,10 @@ git add PKGBUILD .SRCINFO
 commit "$(generate_commit_message "" "$NEW_RELEASE")"
 git push
 
-if [[ "$INPUT_UPDATE_PKGBUILD" != "true" || -z "$INPUT_AUR_SUBMODULE_PATH" ]]; then
+if [[ "$INPUT_UPDATE_PKGBUILD" != "true" && -z "$INPUT_AUR_SUBMODULE_PATH" ]]; then
     echo "Skipping submodule update and PKGBUILD update"
     echo "::endgroup::Commit"
-    exit
+    return
 fi
 
 echo "::group::Commit::Main_repo"
