@@ -14,8 +14,6 @@ RUN useradd -m builder && \
     echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers && \
     usermod -a -G wheel builder
 
-
-
 # Make ssh directory for non-root user and add known_hosts
 RUN mkdir -p /home/builder/.ssh && \
     touch /home/builder/.ssh/known_hosts
@@ -27,9 +25,7 @@ COPY ssh_config /home/builder/.ssh/config
 RUN chown -R builder:builder /home/builder/.ssh && \
     chmod 600 /home/builder/.ssh/* -R
 
-COPY LICENSE README.md cred-helper.sh utils.sh /
-
-COPY entrypoint.sh /entrypoint.sh
+COPY LICENSE README.md cred-helper.sh entrypoint.sh src /
 
 # Switch to non-root user and set workdir
 USER builder
